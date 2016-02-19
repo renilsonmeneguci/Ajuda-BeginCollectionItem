@@ -1,0 +1,81 @@
+﻿@model WebApplication1.Models.Pessoa
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Pessoa</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.PessoaId)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Nome, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Nome, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Nome, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div id="new-telefone"></div>
+        <div class="form-group">
+            <div class="col-md-10 col-lg-offset-2">
+                <a href="javascript:void(0);" id="add-telefone">Adicionar Telefone</a>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-offset-2 col-md-6">
+                <table class="table table-bordered table-condensed">
+                    <thead>
+                        <tr>
+                            <th>DDD</th>
+                            <th>Número</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Telefones)
+                        {
+                            <tr>
+                                <td>@item.DDD</td>
+                                <td>@item.Numero</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+<script>
+        $('#add-telefone').click(function () {
+            $.ajax({
+                url: '@Url.Action("GetNewTelefone","Pessoa")',
+                type: 'POST',
+                success: function (data) {
+                    $('#new-telefone').append(data);
+                }
+            });
+            return false;
+        });
+</script>
+}
